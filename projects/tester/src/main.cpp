@@ -12,19 +12,16 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 
-
+//obj loader from TU
 #include "Gameplay/Camera.h"
 #include "Graphics/IBuffer.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/VertexArrayObject.h"
 #include "Graphics/Shader.h"
-
-
-//obj loader from TU
 #include "Gameplay/Transform.h"
-#include "Utilities/MeshBuilder.h"
-#include "Utilities/ObjLoader.h"
-#include "Utilities/VertexTypes.h"
+#include "Graphics/MeshBuilder.h"
+#include "Graphics/ObjLoader.h"
+#include "Graphics/VertexTypes.h"
 //textrue
 #include "Graphics/Texture2D.h"
 #include "Graphics/Texture2DData.h"
@@ -172,9 +169,6 @@ int main()
 
 
 
-	
-	
-	
 	//vao
 	VertexArrayObject::sptr p1Mod = ObjLoader::LoadFromFile("watermelon.obj");
 	//mod transform
@@ -233,7 +227,6 @@ int main()
 		
 		//shader
 		shader->Bind();
-	
 		shader->SetUniformMatrix("u_View", camera->GetView());
 		shader->SetUniform("s_Diffuse2", 2);
 		diff2->Bind(2);
@@ -245,7 +238,8 @@ int main()
 		
 		RenderVAO(shader, p2Mod, camera, p2trans);
 		RenderVAO(shader, p1Mod, camera, p1trans);
-		//fps limit
+
+		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
 			p1trans = control(p1trans, dt);
