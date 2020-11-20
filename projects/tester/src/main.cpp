@@ -1,3 +1,6 @@
+//Jin Chan Edited
+
+
 #include <Logging.h>
 #include <iostream>
 
@@ -230,9 +233,6 @@ int main()
 		shader->SetUniformMatrix("u_View", camera->GetView());
 		shader->SetUniform("s_Diffuse2", 2);
 		diff2->Bind(2);
-		
-		
-		
 		
 		//render 
 		
