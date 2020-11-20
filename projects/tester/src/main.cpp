@@ -1,6 +1,3 @@
-//Jin Chan Edited
-
-
 #include <Logging.h>
 #include <iostream>
 
@@ -14,7 +11,9 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
-
+//entity
+#include "entt.hpp"
+#include "playerMove.h"
 //obj loader from TU
 #include "Gameplay/Camera.h"
 #include "Graphics/IBuffer.h"
@@ -214,6 +213,17 @@ int main()
 	camera->LookAt(glm::vec3(0.0f)); // Look at center of the screen
 	camera->SetFovDegrees(90.0f); // Set an initial FOV
 	camera->SetOrthoHeight(3.0f);
+	//ecs stuff
+	static entt::registry ecs;
+
+
+	entt::entity player = ecs.create();
+	entt::entity enemy1 = ecs.create();
+	ecs.emplace<Move>(player);
+	ecs.emplace<Move>(enemy1);
+
+
+	ecs.get<Move>(player).showFun();
 
 	//delta time
 	double lastFrame = glfwGetTime();
