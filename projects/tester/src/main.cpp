@@ -1,13 +1,13 @@
 #include <Logging.h>
 #include <iostream>
-
+//
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+//
 #include <filesystem>
 #include <json.hpp>
 #include <fstream>
-
+//
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
@@ -76,7 +76,8 @@ bool initGLFW() {
 	return true;
 }
 
-bool initGLAD() {
+bool initGLAD()
+{
 	if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
 		LOG_ERROR("Failed to initialize Glad");
 		return false;
@@ -85,33 +86,28 @@ bool initGLAD() {
 }
 
 
-
-
-void RenderVAO(
-	const Shader::sptr& shader,
-	const VertexArrayObject::sptr& vao,
-	const Camera::sptr& camera,
-	const Transform::sptr& transform)
+void RenderVAO(const Shader::sptr& shader, const VertexArrayObject::sptr& vao, const Camera::sptr& camera, const Transform::sptr& transform)
 {
 	shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform->LocalTransform());
 	shader->SetUniformMatrix("u_Model", transform->LocalTransform());
-	shader->SetUniformMatrix("u_NormalMatrix", transform->NormalMatrix());
 	vao->Render();
 }
 
 //conrtol
 Transform::sptr control(Transform::sptr trans,float dt)
 {
-	//glm::vec3 location = trans->GetLocalPosition();
-
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		
-			//trans->MoveLocal(5.0f * dt, 0.0f, 0.0f);
+
 		trans->MoveLocalFixed(5.0f * dt, 0.0f, 0.0f);
+		trans->SetLocalRotation(0.0f, -10.0f, 0.0f);
+		trans->SetLocalScale(1.0f,1.0f,-1.0f);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		
 			trans->MoveLocalFixed(-5.0f * dt, 0.0f, 0.0f);
+			trans->SetLocalRotation(0.0f, 10.0f, 0.0f);
+			trans->SetLocalScale(-1.0f, 1.0f, -1.0f);
+		
 	}
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		
@@ -121,6 +117,7 @@ Transform::sptr control(Transform::sptr trans,float dt)
 		
 			trans->MoveLocalFixed(0.0f, -5.0f * dt, 0.0f);
 	}
+	/*
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 
 		trans->MoveLocalFixed(0.0f, 0.0f, -5.0f * dt);
@@ -144,11 +141,31 @@ Transform::sptr control(Transform::sptr trans,float dt)
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 
 		trans->RotateLocal(0.0f, 60.0f * dt, 0.0f);
+	}*/
+	return trans;
+}
+glm::vec3 cameraTrans(glm::vec3 trans, float dt)
+{
+	//glm::vec3 location = trans->GetLocalPosition();
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+
+		trans.x += 5.0f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+
+		trans.x += -5.0f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+
+		trans.y += 5.0f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+
+		trans.y += -5.0f * dt;
 	}
 	return trans;
 }
-
-
 
 
 int main()
@@ -171,49 +188,49 @@ int main()
 
 
 
-	//vao
-	VertexArrayObject::sptr p1Mod = ObjLoader::LoadFromFile("watermelon.obj");
-	//mod transform
-	Transform::sptr p1trans = Transform::Create();
-	p1trans->Transform::SetLocalPosition(glm::vec3(0.0f, 0.0f, 5.0f));
-	p1trans->Transform::SetLocalRotation(glm::vec3(0.0f, -90.0f, 0.0f));
-
-	p1trans->Transform::SetLocalScale(glm::vec3(1.5f, 1.5f, 1.5f));
-	// Load our shaders
-	Shader::sptr shader = Shader::Create();
-	shader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
-	shader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
-	shader->Link();
-	//////////////////////////
-
-
-	//vao
-	VertexArrayObject::sptr p2Mod = ObjLoader::LoadFromFile("table.obj");
-	//mod transform
-	Transform::sptr p2trans = Transform::Create();
-	p2trans->Transform::SetLocalPosition(glm::vec3(0.0f, -2.0f, 2.0f));
-	p2trans->Transform::SetLocalRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-	p2trans->Transform::SetLocalScale(glm::vec3(3.0f, 3.0f, 3.0f));
+	//////////////////////////////////////////mod and transform
+	//melon = 1.6m
+	VertexArrayObject::sptr melonMod = ObjLoader::LoadFromFile("watermelon.obj");
+	Transform::sptr melonTrans = Transform::Create();
+	melonTrans->Transform::SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	melonTrans->Transform::SetLocalRotation(glm::vec3(0.0f, -10.0f, 0.0f));
+	melonTrans->Transform::SetLocalScale(glm::vec3(1.0f, 1.0f, -1.0f));
+	
+	//map
+	VertexArrayObject::sptr mapMod = ObjLoader::LoadFromFile("mapping.obj");
+	Transform::sptr mapTrans = Transform::Create();
+	mapTrans->Transform::SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	mapTrans->Transform::SetLocalRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+	mapTrans->Transform::SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 
+	//////////////////////////////////////////Load our shaders
+	Shader::sptr melonShader = Shader::Create();
+	melonShader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
+	melonShader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
+	melonShader->Link();
+	Shader::sptr mapShader = Shader::Create();
+	mapShader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
+	mapShader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
+	mapShader->Link();
+	//////////////////////////////////////////textrue
+	Texture2DData::sptr melonTexData = Texture2DData::LoadFromFile("images/melon UV.png");
+	Texture2DData::sptr mapTexData = Texture2DData::LoadFromFile("images/melon UV.png");
 	
-	//textrue
+	Texture2D::sptr melonTex = Texture2D::Create();
+	melonTex->LoadData(melonTexData);
+	Texture2D::sptr mapTex = Texture2D::Create();
+	mapTex->LoadData(mapTexData);
 	
-	Texture2DData::sptr diff2Map = Texture2DData::LoadFromFile("images/melon UV.png");
-	
-	
-	Texture2D::sptr diff2 = Texture2D::Create();
-	diff2->LoadData(diff2Map);
-	
-	
-	//camera
+	//////////////////////////////////////////camera
 	camera = Camera::Create();
-	camera->SetPosition(glm::vec3(0, 5, 17)); // Set initial position
+	glm::vec3 cameraPosition = glm::vec3(0, 3, 7);
+	camera->SetPosition(cameraPosition); // Set initial position
 	camera->SetUp(glm::vec3(0, 1, 0)); // Use a z-up coordinate system
-	camera->LookAt(glm::vec3(0.0f)); // Look at center of the screen
+	camera->LookAt(glm::vec3(0.0f, 0.0f, 0.0f)); // Look at center of the screen
 	camera->SetFovDegrees(90.0f); // Set an initial FOV
 	camera->SetOrthoHeight(3.0f);
-	//ecs stuff
+	//////////////////////////////////////////ecs
 	static entt::registry ecs;
 
 
@@ -225,7 +242,7 @@ int main()
 
 	ecs.get<Move>(player).showFun();
 
-	//delta time
+	//////////////////////////////////////////delta time
 	double lastFrame = glfwGetTime();
 	double lastFrameTime = glfwGetTime();
 	const double fpsLimit = 1.0 / 60.0;
@@ -239,27 +256,28 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//shader
-		shader->Bind();
-		shader->SetUniformMatrix("u_View", camera->GetView());
-		shader->SetUniform("s_Diffuse2", 2);
-		diff2->Bind(2);
+		melonShader->Bind();
+		melonShader->SetUniform("s_tex", 2);
+		melonTex->Bind(2);
+		RenderVAO(melonShader, melonMod, camera, melonTrans);
+
 		
-		//render 
+		mapShader->Bind();
+		mapShader->SetUniform("s_tex", 2);
+		mapTex->Bind(2);
 		
-		RenderVAO(shader, p2Mod, camera, p2trans);
-		RenderVAO(shader, p1Mod, camera, p1trans);
+		RenderVAO(mapShader, mapMod, camera, mapTrans);
+		
 
 		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
-			p1trans = control(p1trans, dt);
-
-
+			melonTrans = control(melonTrans, dt);
+			cameraPosition = cameraTrans(cameraPosition, dt);
+			camera->SetPosition(cameraPosition);
 
 			lastFrameTime = thisFrame;
 		}
-	
-	
 		glfwSwapBuffers(window);
 		lastFrame = thisFrame;
 	}
