@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <GLM/glm.hpp>
-
+#include <GLFW/glfw3.h>
 /// <summary>
 /// Represents a simple perspective camera for use by first person or third person games
 /// </summary>
@@ -72,7 +72,7 @@ public:
 	/// Sets the vertical field of view in degrees for this camera
 	/// </summary>
 	void SetFovDegrees(float value);
-
+	void cameraMove(GLFWwindow* window);
 	/// <summary>
 	/// Gets the camera's position in world space
 	/// </summary>

@@ -66,6 +66,21 @@ void Camera::SetFovDegrees(float value) {
 	SetFovRadians(glm::radians(value));
 }
 
+void Camera::cameraMove(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		_position.x += 0.1f;
+		__CalculateView();
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		_position.x -= 0.1f;
+		__CalculateView();
+	}
+	
+}
+
 const glm::mat4& Camera::GetViewProjection() const {
 	if (_isDirty) {
 		_viewProjection = _projection * _view;

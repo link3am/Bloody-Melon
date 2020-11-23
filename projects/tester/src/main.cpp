@@ -13,7 +13,7 @@
 #include <GLM/gtc/type_ptr.hpp>
 //entity
 #include "entt.hpp"
-#include "playerMove.h"
+#include "phy.h"
 //obj loader from TU
 #include "Gameplay/Camera.h"
 #include "Graphics/IBuffer.h"
@@ -27,7 +27,8 @@
 //textrue
 #include "Graphics/Texture2D.h"
 #include "Graphics/Texture2DData.h"
-
+//phy
+//#include <bullet/btBulletDynamicsCommon.h>
 void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::string sourceTxt;
 	switch (source) {
@@ -94,6 +95,7 @@ void RenderVAO(const Shader::sptr& shader, const VertexArrayObject::sptr& vao, c
 }
 
 //conrtol
+/*
 Transform::sptr control(Transform::sptr trans,float dt)
 {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -117,7 +119,7 @@ Transform::sptr control(Transform::sptr trans,float dt)
 		
 			trans->MoveLocalFixed(0.0f, -5.0f * dt, 0.0f);
 	}
-	/*
+	
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 
 		trans->MoveLocalFixed(0.0f, 0.0f, -5.0f * dt);
@@ -141,31 +143,10 @@ Transform::sptr control(Transform::sptr trans,float dt)
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 
 		trans->RotateLocal(0.0f, 60.0f * dt, 0.0f);
-	}*/
-	return trans;
-}
-glm::vec3 cameraTrans(glm::vec3 trans, float dt)
-{
-	//glm::vec3 location = trans->GetLocalPosition();
-
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-
-		trans.x += 5.0f * dt;
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-
-		trans.x += -5.0f * dt;
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-
-		trans.y += 5.0f * dt;
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-
-		trans.y += -5.0f * dt;
 	}
 	return trans;
-}
+}*/
+
 
 
 int main()
@@ -184,10 +165,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_CULL_FACE);
 
-
-
-
-
+	
 	//////////////////////////////////////////mod and transform
 	//melon = 1.6m
 	VertexArrayObject::sptr melonMod = ObjLoader::LoadFromFile("watermelon.obj");
@@ -236,15 +214,26 @@ int main()
 
 	entt::entity player = ecs.create();
 	entt::entity enemy1 = ecs.create();
-	ecs.emplace<Move>(player);
-	ecs.emplace<Move>(enemy1);
-
-
-	ecs.get<Move>(player).showFun();
+	ecs.emplace<phy>(player);
+	ecs.get<phy>(player).glWindow(window);
 
 	//////////////////////////////////////////delta time
 	double lastFrame = glfwGetTime();
 	double lastFrameTime = glfwGetTime();
+	double timer2 = glfwGetTime();
+	//fake phy
+	double i = 0.0;
+	float mass = -9.8;
+	float position = 0.0;
+	float force = 5;
+	bool isGround = true;
+
+	if (isGround == false) 
+	{
+		position = (i * i * i * 9.8) + (i * i * force);
+
+	}
+
 	const double fpsLimit = 1.0 / 60.0;
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -272,13 +261,16 @@ int main()
 		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
-			melonTrans = control(melonTrans, dt);
-			cameraPosition = cameraTrans(cameraPosition, dt);
-			camera->SetPosition(cameraPosition);
+			melonTrans = ecs.get<phy>(player).phyUpdate(melonTrans,dt);
+			camera->cameraMove(window);
 
 			lastFrameTime = thisFrame;
 		}
 		glfwSwapBuffers(window);
+
+		//phy
+		timer2 = glfwGetTime();
+		//std::cout << timer2 <<std::endl;
 		lastFrame = thisFrame;
 	}
 
