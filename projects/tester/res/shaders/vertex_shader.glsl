@@ -11,10 +11,10 @@ layout(location = 2) out vec3 outNormal;
 layout(location = 3) out vec2 outUV;
 
 uniform mat4 u_ModelViewProjection;
-uniform mat4 u_View;
+//uniform mat4 u_View;
 uniform mat4 u_Model;
-uniform mat3 u_ModelRotation;
-uniform vec3 u_LightPos;
+//uniform mat3 u_ModelRotation;
+//uniform vec3 u_LightPos;
 
 
 void main() {
