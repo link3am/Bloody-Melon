@@ -193,7 +193,7 @@ int main()
 	mapShader->Link();
 	//////////////////////////////////////////textrue
 	Texture2DData::sptr melonTexData = Texture2DData::LoadFromFile("images/melon UV.png");
-	Texture2DData::sptr mapTexData = Texture2DData::LoadFromFile("images/melon UV.png");
+	Texture2DData::sptr mapTexData = Texture2DData::LoadFromFile("images/table UV.jpg");
 	
 	Texture2D::sptr melonTex = Texture2D::Create();
 	melonTex->LoadData(melonTexData);
@@ -221,18 +221,6 @@ int main()
 	double lastFrame = glfwGetTime();
 	double lastFrameTime = glfwGetTime();
 	double timer2 = glfwGetTime();
-	//fake phy
-	double i = 0.0;
-	float mass = -9.8;
-	float position = 0.0;
-	float force = 5;
-	bool isGround = true;
-
-	if (isGround == false) 
-	{
-		position = (i * i * i * 9.8) + (i * i * force);
-
-	}
 
 	const double fpsLimit = 1.0 / 60.0;
 	while (!glfwWindowShouldClose(window)) {
