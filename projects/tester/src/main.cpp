@@ -94,59 +94,6 @@ void RenderVAO(const Shader::sptr& shader, const VertexArrayObject::sptr& vao, c
 	vao->Render();
 }
 
-//conrtol
-/*
-Transform::sptr control(Transform::sptr trans,float dt)
-{
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-
-		trans->MoveLocalFixed(5.0f * dt, 0.0f, 0.0f);
-		trans->SetLocalRotation(0.0f, -10.0f, 0.0f);
-		trans->SetLocalScale(1.0f,1.0f,-1.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		
-			trans->MoveLocalFixed(-5.0f * dt, 0.0f, 0.0f);
-			trans->SetLocalRotation(0.0f, 10.0f, 0.0f);
-			trans->SetLocalScale(-1.0f, 1.0f, -1.0f);
-		
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		
-			trans->MoveLocalFixed(0.0f, 5.0f*dt, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		
-			trans->MoveLocalFixed(0.0f, -5.0f * dt, 0.0f);
-	}
-	
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-
-		trans->MoveLocalFixed(0.0f, 0.0f, -5.0f * dt);
-	}
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-
-		trans->MoveLocalFixed(0.0f, 0.0f, 5.0f * dt);
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-
-		trans->RotateLocal(60.0f * dt, 0.0f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-
-		trans->RotateLocal(-60.0f * dt, 0.0f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-
-		trans->RotateLocal(0.0f, -60.0f * dt, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-
-		trans->RotateLocal(0.0f, 60.0f * dt, 0.0f);
-	}
-	return trans;
-}*/
-
 
 
 int main()
@@ -205,7 +152,7 @@ int main()
 	glm::vec3 cameraPosition = glm::vec3(0, 3, 7);
 	camera->SetPosition(cameraPosition); // Set initial position
 	camera->SetUp(glm::vec3(0, 1, 0)); // Use a z-up coordinate system
-	camera->LookAt(glm::vec3(0.0f, 0.0f, 0.0f)); // Look at center of the screen
+	camera->LookAt(glm::vec3(0.0f, 1.0f, 0.0f)); // Look at center of the screen
 	camera->SetFovDegrees(90.0f); // Set an initial FOV
 	camera->SetOrthoHeight(3.0f);
 	//////////////////////////////////////////ecs
