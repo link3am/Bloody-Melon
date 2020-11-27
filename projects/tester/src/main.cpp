@@ -249,9 +249,13 @@ int main()
 		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
+<<<<<<< Updated upstream
 			melonTrans = ecs.get<phy>(player).phyUpdate(melonTrans,dt);
 			camera->cameraMove(window);
 
+=======
+			p1trans = control(p1trans, dt);
+>>>>>>> Stashed changes
 			lastFrameTime = thisFrame;
 		}
 		glfwSwapBuffers(window);
