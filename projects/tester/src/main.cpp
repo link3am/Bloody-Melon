@@ -11,11 +11,15 @@
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
+//vector
+#include <vector>
+
 //entity
 #include "entt.hpp"
 #include "phy.h"
-//obj loader from TU
-#include "Gameplay/Camera.h"
+#include "Player.h"
+#include "Enemy.h"
+
 #include "Graphics/IBuffer.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/VertexArrayObject.h"
@@ -27,7 +31,8 @@
 //textrue
 #include "Graphics/Texture2D.h"
 #include "Graphics/Texture2DData.h"
-//phy
+using namespace std;
+
 //#include <bullet/btBulletDynamicsCommon.h>
 void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::string sourceTxt;
@@ -98,6 +103,8 @@ void RenderVAO(const Shader::sptr& shader, const VertexArrayObject::sptr& vao, c
 
 int main()
 { 
+	vector<Enemy> EnemyList;
+
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 	if (!initGLFW())
 		return 1;
@@ -113,14 +120,39 @@ int main()
 	//glEnable(GL_CULL_FACE);
 
 	
+	static  entt::registry ecs;
+
 	//////////////////////////////////////////mod and transform
 	//melon = 1.6m
-	VertexArrayObject::sptr melonMod = ObjLoader::LoadFromFile("watermelon.obj");
-	Transform::sptr melonTrans = Transform::Create();
-	melonTrans->Transform::SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	melonTrans->Transform::SetLocalRotation(glm::vec3(0.0f, -10.0f, 0.0f));
-	melonTrans->Transform::SetLocalScale(glm::vec3(1.0f, 1.0f, -1.0f));
+	//VertexArrayObject::sptr melonMod = ObjLoader::LoadFromFile("watermelon.obj");
+	//Transform::sptr melonTrans = Transform::Create();
+	//melonTrans->Transform::SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	//melonTrans->Transform::SetLocalRotation(glm::vec3(0.0f, -10.0f, 0.0f));
+	//melonTrans->Transform::SetLocalScale(glm::vec3(1.0f, 1.0f, -1.0f));
 	
+	Player p1("watermelon.obj",
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -10.0f, 0.0f),
+		glm::vec3(1.0f, 1.0f, -1.0f),
+		"images/melon UV.png");
+
+
+	Enemy e1("watermelon.obj",
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -10.0f, 0.0f),
+		glm::vec3(1.0f, 1.0f, -1.0f),
+		"images/melon UV.png");
+	e1.setPatrolPoint(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f, 0.0f, 0.0f));
+	EnemyList.push_back(e1);
+
+	Enemy e2("watermelon.obj",
+		glm::vec3(3.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -10.0f, 0.0f),
+		glm::vec3(1.0f, 1.0f, -1.0f),
+		"images/melon UV.png");
+	e2.setPatrolPoint(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(4.0f, 0.0f, 0.0f));
+	EnemyList.push_back(e2);
+
 	//map
 	VertexArrayObject::sptr mapMod = ObjLoader::LoadFromFile("mapping.obj");
 	Transform::sptr mapTrans = Transform::Create();
@@ -130,20 +162,20 @@ int main()
 
 
 	//////////////////////////////////////////Load our shaders
-	Shader::sptr melonShader = Shader::Create();
-	melonShader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
-	melonShader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
-	melonShader->Link();
+	//Shader::sptr melonShader = Shader::Create();
+	//melonShader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
+	//melonShader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
+	//melonShader->Link();
 	Shader::sptr mapShader = Shader::Create();
 	mapShader->LoadShaderPartFromFile("shaders/vertex_shader.glsl", GL_VERTEX_SHADER);
 	mapShader->LoadShaderPartFromFile("shaders/frag_blinn_phong_textured.glsl", GL_FRAGMENT_SHADER);
 	mapShader->Link();
 	//////////////////////////////////////////textrue
-	Texture2DData::sptr melonTexData = Texture2DData::LoadFromFile("images/melon UV.png");
+	//Texture2DData::sptr melonTexData = Texture2DData::LoadFromFile("images/melon UV.png");
 	Texture2DData::sptr mapTexData = Texture2DData::LoadFromFile("images/table UV.jpg");
 	
-	Texture2D::sptr melonTex = Texture2D::Create();
-	melonTex->LoadData(melonTexData);
+	//Texture2D::sptr melonTex = Texture2D::Create();
+	//melonTex->LoadData(melonTexData);
 	Texture2D::sptr mapTex = Texture2D::Create();
 	mapTex->LoadData(mapTexData);
 	
@@ -156,14 +188,17 @@ int main()
 	camera->SetFovDegrees(90.0f); // Set an initial FOV
 	camera->SetOrthoHeight(3.0f);
 	//////////////////////////////////////////ecs
-	static entt::registry ecs;
 
 
 	entt::entity player = ecs.create();
 	entt::entity enemy1 = ecs.create();
+	
+	
 	ecs.emplace<phy>(player);
 	ecs.get<phy>(player).glWindow(window);
 
+	ecs.emplace<phy>(enemy1);
+	ecs.get<phy>(enemy1).glWindow(window);
 	//////////////////////////////////////////delta time
 	double lastFrame = glfwGetTime();
 	double lastFrameTime = glfwGetTime();
@@ -180,29 +215,25 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//shader
-		melonShader->Bind();
-		melonShader->SetUniform("s_tex", 2);
-		melonTex->Bind(2);
-		RenderVAO(melonShader, melonMod, camera, melonTrans);
+		p1.Render(camera);
 
-		
+		for (int i = 0; i < EnemyList.size(); i++) {
+			EnemyList[i].Render(camera);
+			EnemyList[i].AIPatrol();
+		}
+
 		mapShader->Bind();
 		mapShader->SetUniform("s_tex", 2);
 		mapTex->Bind(2);
 		
 		RenderVAO(mapShader, mapMod, camera, mapTrans);
 		
-
 		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
-<<<<<<< Updated upstream
-			melonTrans = ecs.get<phy>(player).phyUpdate(melonTrans,dt);
+			p1.melonTrans = ecs.get<phy>(player).phyUpdate(p1.melonTrans,dt);
 			camera->cameraMove(window);
 
-=======
-			p1trans = control(p1trans, dt);
->>>>>>> Stashed changes
 			lastFrameTime = thisFrame;
 		}
 		glfwSwapBuffers(window);

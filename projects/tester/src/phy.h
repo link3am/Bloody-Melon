@@ -61,7 +61,7 @@ public:
 		//test
 		
 
-		if (pos.y > groundHight)//gravity
+		if (pos.y > groundHight && isGround==false)//gravity
 		{
 			//test 
 			position += acceleration * dt*dt;
