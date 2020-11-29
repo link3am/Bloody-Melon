@@ -23,10 +23,10 @@ public:
 
 	void setPatrolPoint(glm::vec3 p1, glm::vec3 p2);
 	entt::entity enemy;
-	glm::vec3 pos;
-	float x;
-	float y;
-	float z;
+	//glm::vec3 pos;
+	//float x;
+	//float y;
+	//float z;
 
 	float t = 0;
 

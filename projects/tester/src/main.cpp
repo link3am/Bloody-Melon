@@ -135,21 +135,22 @@ int main()
 		glm::vec3(0.0f, -10.0f, 0.0f),
 		glm::vec3(1.0f, 1.0f, -1.0f),
 		"images/melon UV.png");
+	p1.glWindow(window);
 
 
-	Enemy e1("watermelon.obj",
+	Enemy e1("knife.obj",
 		glm::vec3(1.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, -10.0f, 0.0f),
 		glm::vec3(1.0f, 1.0f, -1.0f),
-		"images/melon UV.png");
+		"images/knife UV.png");
 	e1.setPatrolPoint(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f, 0.0f, 0.0f));
 	EnemyList.push_back(e1);
 
-	Enemy e2("watermelon.obj",
+	Enemy e2("knife.obj",
 		glm::vec3(3.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, -10.0f, 0.0f),
 		glm::vec3(1.0f, 1.0f, -1.0f),
-		"images/melon UV.png");
+		"images/knife UV.png");
 	e2.setPatrolPoint(glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(4.0f, 0.0f, 0.0f));
 	EnemyList.push_back(e2);
 
@@ -191,18 +192,12 @@ int main()
 
 
 	entt::entity player = ecs.create();
-	entt::entity enemy1 = ecs.create();
 	
 	
-	ecs.emplace<phy>(player);
-	ecs.get<phy>(player).glWindow(window);
-
-	ecs.emplace<phy>(enemy1);
-	ecs.get<phy>(enemy1).glWindow(window);
 	//////////////////////////////////////////delta time
 	double lastFrame = glfwGetTime();
 	double lastFrameTime = glfwGetTime();
-	double timer2 = glfwGetTime();
+	
 
 	const double fpsLimit = 1.0 / 60.0;
 	while (!glfwWindowShouldClose(window)) {
@@ -231,16 +226,16 @@ int main()
 		//fps limit in this if()
 		if ((thisFrame - lastFrameTime) >= fpsLimit)
 		{
-			p1.melonTrans = ecs.get<phy>(player).phyUpdate(p1.melonTrans,dt);
+			//p1.melonTrans = ecs.get<phy>(player).phyUpdate(p1.melonTrans,dt);
+			//player phy
+			p1.melonTrans = p1.phyUpdate(p1.melonTrans, dt);
 			camera->cameraMove(window);
 
 			lastFrameTime = thisFrame;
 		}
 		glfwSwapBuffers(window);
 
-		//phy
-		timer2 = glfwGetTime();
-		//std::cout << timer2 <<std::endl;
+	
 		lastFrame = thisFrame;
 	}
 

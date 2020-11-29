@@ -54,7 +54,7 @@ void Enemy::AIPatrol()
 
 	glm::vec3 newPos = (PatrolPoint2 - PatrolPoint1)*t+ PatrolPoint1;
 	enemyTrans->SetLocalPosition(newPos.x, newPos.y, enemyTrans->GetLocalPosition().z);
-	std::cout << newPos.x << "," << newPos.y << std::endl;
+	//std::cout << newPos.x << "," << newPos.y << std::endl;
 }
 
 void Enemy::setPatrolPoint(glm::vec3 p1, glm::vec3 p2)
