@@ -72,7 +72,7 @@ public:
 	/// Sets the vertical field of view in degrees for this camera
 	/// </summary>
 	void SetFovDegrees(float value);
-	void cameraMove(GLFWwindow* window);
+	void cameraMove(GLFWwindow* window, glm::vec3 newPos);
 	/// <summary>
 	/// Gets the camera's position in world space
 	/// </summary>

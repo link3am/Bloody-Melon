@@ -63,3 +63,8 @@ void Enemy::setPatrolPoint(glm::vec3 p1, glm::vec3 p2)
 	PatrolPoint2 = p2;
 }
 
+glm::vec4  Enemy::getHitBox()
+{
+	return {enemyTrans->GetLocalPosition().x, enemyTrans->GetLocalPosition().y, enemyTrans->GetLocalScale().x, enemyTrans->GetLocalScale().y };
+}
+

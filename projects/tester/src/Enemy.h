@@ -22,13 +22,17 @@ public:
 	void AIPatrol();
 
 	void setPatrolPoint(glm::vec3 p1, glm::vec3 p2);
+
+	bool IsDeath() {
+		return death;
+	}
+
+	glm::vec4 getHitBox();
 	entt::entity enemy;
-	//glm::vec3 pos;
-	//float x;
-	//float y;
-	//float z;
 
 	float t = 0;
+
+	bool death = false;
 
 	glm::vec3 PatrolPoint1 = glm::vec3 (0.0, 0.0, 0.0);
 	glm::vec3 PatrolPoint2 = glm::vec3 (0.0, 0.0, 0.0);
